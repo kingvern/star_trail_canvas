@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-
+    scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>粒子运动</title>
+    <style>
+    *{
+    margin: 0;
+    padding: 0;
+    }
+    html,body{
+    width: 100%;
+    height: 100%;
+    }
+    canvas{
+    /*width: 100%;
+    height: 100%;*/
+    display: block;
+    /*background-color: #000;*/
+    }
+    #display {position: absolute; top:8; left:8;}
+    </style>
+  </head>
+  <body>
+    <!-- <canvas id="canvas"></canvas> -->
+    <!-- <body onload="draw();" > -->
+    <canvas id="clock" ></canvas>
+  </body>
+</body>
+<script>
+var startTime = new Date();
+console.log(startTime);
+function random(min, max) {
+    if (arguments.length < 2) {
+        max = min;
+        min = 0;
+    }
+
+    if (min > max) {
+        var hold = max;
+        max = min;
+        min = hold;
+    }
+
+    return Math.random() * (max - min + 1) + min;
+}
+function maxOrbit(x, y) {
+    var max = Math.max(x, y),
+    diameter = Math.round(Math.sqrt(max * max + max * max));
+    return diameter;
+    //星星移动范围，值越大范围越小，
+}
+function Star() {};
+Star.prototype = {
+    init: function() {
+        this.radius = Math.sqrt(Math.pow(random(w / 2), 2) + Math.pow(random(h / 3 * 2), 2));
+        // this.radius = random(Math.sqrt(Math.pow((w / 2), 2) + Math.pow((h / 3 * 2), 2)));
+        this.startAngle = random(Math.PI * 2);
+        this.size = Math.random(0.5, 1);
+        this.color = 'hsla(' + random(180, 220) + ', ' + random(30, 70) + '%, ' + random(30, 100) + '%, ' + random(0.5, 1) + ')'
+    }
+}
+function draw() {
+    var canvas = document.getElementById('clock');
+    // var displayCanvas = document.getElementById('display');
+    var currentTime = new Date();
+    // var hour = (currentTime.getHours() % 12) * Math.PI / 6;
+    // var minute = currentTime.getMinutes() * Math.PI / 30;
+    // var second = currentTime.getSeconds() * Math.PI / 30;
+    // console.log(second);
+    // var tm = currentTime;
+    // hour = hour - Math.PI * (1 / 2);
+    // minute = minute - Math.PI * (1 / 2);
+    // second = second - Math.PI * (1 / 2);
+    second = (currentTime - startTime) / 1000;
+    if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+        w = canvas.width = window.innerWeight || document.documentElement.clientWidth || document.body.clientWidth;
+        h = canvas.height = window.innerWeight || document.documentElement.clientHeight || document.body.clientHeight;
+        console.log(w);
+        console.log(h);
+        var s = Math.PI / 180;
+        // var m = s / 60;
+        // var h = m / 12;
+        stars = []
+        for (var i = 0; i < 2500; i++) {
+            var star = new Star();
+            star.init();
+            stars.push(star);
+        }
+        // requestAnimationFrame(step);
+
+        function step() {
+            second = second + s;
+            // minute = minute + m;
+            // hour = hour + h;
+            // if (second >= Math.PI * (3 / 2)) {
+            //     second = Math.PI * ( - 1 / 2);
+            // }
+            // if (minute >= Math.PI * (3 / 2)) {
+            //     minute = Math.PI * ( - 1 / 2);
+            // }
+            // if (second >= Math.PI * (3 / 2)) {
+            //     second = Math.PI * ( - 1 / 2);
+            // }
+            ctx.clearRect(0, 0, w, h);
+            // 创建渐变
+            var grd = ctx.createLinearGradient(0, 0, 0, h);
+            grd.addColorStop(0, "#081226");
+            grd.addColorStop(0.5, "#0d1936");
+            grd.addColorStop(1, "#223768");
+
+            // 填充渐变
+            ctx.fillStyle = grd;
+            ctx.fillRect(0, 0, w, h);
+            ctx.beginPath();
+            //绘制圆形轮廓 Math.random()
+            for (var i of stars) {
+                drawCircle(ctx, i.radius, i.startAngle, second / 4, i.size, i.color);
+            }
+            // requestAnimationFrame(step);
+        }
+        setInterval(function(){
+            step();
+        }, 100);
+    }
+}
+function drawCircle(ctx, radius, startAngle, length, size, color) {
+    ctx.beginPath();
+    // ctx.moveTo(100,100-radius);//起点
+    ctx.strokeStyle = color;
+    ctx.lineWidth = size;
+    endAngle = startAngle + length + 0.005;
+    ctx.arc(w / 2, h / 3, radius, startAngle, endAngle, false);
+    ctx.stroke();
+}
+draw();
+</script>
+</html>
